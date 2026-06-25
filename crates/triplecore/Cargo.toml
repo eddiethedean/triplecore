@@ -1,0 +1,41 @@
+[package]
+name = "triplecore"
+description = "Semantic runtime for ontology-native tools"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[features]
+default = ["rdf", "diagnostics"]
+rdf = ["dep:triplecore-rdf"]
+diagnostics = ["dep:triplecore-diagnostics"]
+ontology = ["dep:triplecore-ontology"]
+jsonld = ["dep:triplecore-jsonld"]
+turtle = ["dep:triplecore-turtle"]
+mapping = ["dep:triplecore-mapping"]
+query = ["dep:triplecore-query"]
+planner = ["dep:triplecore-planner"]
+reason = ["dep:triplecore-reason"]
+
+[dependencies]
+triplecore-rdf = { workspace = true, optional = true }
+triplecore-diagnostics = { workspace = true, optional = true }
+triplecore-ontology = { workspace = true, optional = true }
+triplecore-jsonld = { workspace = true, optional = true }
+triplecore-turtle = { workspace = true, optional = true }
+triplecore-mapping = { workspace = true, optional = true }
+triplecore-query = { workspace = true, optional = true }
+triplecore-planner = { workspace = true, optional = true }
+triplecore-reason = { workspace = true, optional = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+
+[[example]]
+name = "graph_core"
+path = "../../examples/rust/graph_core.rs"

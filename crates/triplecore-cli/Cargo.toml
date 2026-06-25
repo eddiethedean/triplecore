@@ -1,0 +1,23 @@
+[package]
+name = "triplecore-cli"
+description = "Command-line tool for TripleCore semantic artifacts"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "triplecore"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+serde_json = { workspace = true }
+triplecore = { path = "../triplecore", features = ["rdf", "diagnostics"] }
+triplecore-jsonld = { workspace = true }
+triplecore-turtle = { workspace = true }

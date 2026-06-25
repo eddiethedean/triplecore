@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triplecore.dev/schemas/diagnostics.schema.json",
+  "title": "Diagnostic",
+  "type": "object",
+  "required": ["code", "severity", "message"],
+  "properties": {
+    "code": { "type": "string", "pattern": "^TC-[A-Z]+-[0-9]{3}$" },
+    "severity": { "enum": ["error", "warning", "info", "hint"] },
+    "message": { "type": "string" },
+    "target": { "type": "string" },
+    "suggestion": { "type": "string" },
+    "span": {
+      "type": "object",
+      "properties": {
+        "file": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triplecore.dev/schemas/mapping.schema.json",
+  "title": "MappingDocument",
+  "type": "object",
+  "required": ["entities"],
+  "properties": {
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "class_iri", "source", "identity"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "class_iri": { "type": "string", "format": "uri" },
+          "source": { "type": "string" },
+          "identity": { "type": "string" },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["property_iri", "source_path"],
+              "properties": {
+                "property_iri": { "type": "string" },
+                "source_path": { "type": "string", "minLength": 1 },
+                "required": { "type": "boolean", "default": false }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

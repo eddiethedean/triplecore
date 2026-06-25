@@ -1,0 +1,19 @@
+{
+  "name": "triplecore-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "TripleCore semantic runtime monorepo",
+  "workspaces": [
+    "js/packages/*"
+  ],
+  "scripts": {
+    "format": "prettier --write \"js/**/*.{ts,tsx,json}\"",
+    "lint": "echo \"JS lint placeholder — WASM packages arrive in v0.7.0\"",
+    "test": "echo \"JS tests placeholder — WASM packages arrive in v0.7.0\"",
+    "build": "echo \"JS build placeholder — WASM packages arrive in v0.7.0\""
+  },
+  "devDependencies": {
+    "prettier": "^3.3.0",
+    "typescript": "^5.5.0"
+  }
+}

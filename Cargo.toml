@@ -1,0 +1,46 @@
+[workspace]
+members = [
+    "crates/triplecore",
+    "crates/triplecore-rdf",
+    "crates/triplecore-ontology",
+    "crates/triplecore-jsonld",
+    "crates/triplecore-turtle",
+    "crates/triplecore-mapping",
+    "crates/triplecore-query",
+    "crates/triplecore-planner",
+    "crates/triplecore-diagnostics",
+    "crates/triplecore-reason",
+    "crates/triplecore-cli",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/triplecore/triplecore"
+homepage = "https://github.com/triplecore/triplecore"
+documentation = "https://triplecore.readthedocs.io"
+authors = ["TripleCore Contributors"]
+rust-version = "1.75"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+anyhow = "1"
+indexmap = { version = "2", features = ["serde"] }
+smallvec = "1"
+regex = "1"
+url = "2"
+clap = { version = "4", features = ["derive"] }
+schemars = { version = "0.8", features = ["derive"] }
+triplecore-rdf = { path = "crates/triplecore-rdf", version = "0.1.0" }
+triplecore-diagnostics = { path = "crates/triplecore-diagnostics", version = "0.1.0" }
+triplecore-ontology = { path = "crates/triplecore-ontology", version = "0.1.0" }
+triplecore-jsonld = { path = "crates/triplecore-jsonld", version = "0.1.0" }
+triplecore-turtle = { path = "crates/triplecore-turtle", version = "0.1.0" }
+triplecore-mapping = { path = "crates/triplecore-mapping", version = "0.1.0" }
+triplecore-query = { path = "crates/triplecore-query", version = "0.1.0" }
+triplecore-planner = { path = "crates/triplecore-planner", version = "0.1.0" }
+triplecore-reason = { path = "crates/triplecore-reason", version = "0.1.0" }

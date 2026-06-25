@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://triplecore.dev/schemas/ontology.schema.json",
+  "title": "Ontology",
+  "type": "object",
+  "properties": {
+    "iri": { "type": "string", "format": "uri" },
+    "graph": { "type": "array" }
+  }
+}

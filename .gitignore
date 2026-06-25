@@ -1,0 +1,33 @@
+/target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+build/
+*.so
+.uv/
+
+# JavaScript
+node_modules/
+js/packages/wasm/pkg/
+js/packages/wasm/generated/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Docs build
+site/
+book/
+
+# Test artifacts
+*.profraw

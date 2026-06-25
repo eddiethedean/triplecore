@@ -1,0 +1,14 @@
+[package]
+name = "triplecore-query"
+description = "Semantic query AST for TripleCore (preview)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+documentation.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+serde = { workspace = true }

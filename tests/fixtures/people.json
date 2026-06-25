@@ -1,0 +1,16 @@
+[
+  {
+    "subject": {
+      "kind": "iri",
+      "iri": "https://example.com/person/1"
+    },
+    "predicate": "https://schema.org/name",
+    "object": {
+      "kind": "literal",
+      "literal": {
+        "kind": "string",
+        "value": "Ada Lovelace"
+      }
+    }
+  }
+]
