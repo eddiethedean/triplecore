@@ -213,19 +213,12 @@ Core RDF primitives.
 
 Responsibilities:
 
-- IRI
-- blank node
-- literal
-- datatype
-- language tag
-- triple
-- quad
-- graph
-- dataset
+- IRI, blank node, literal, term, triple, quad, graph, dataset
 - namespace registry
-- graph operations
-- graph diff
-- graph merge
+- graph operations, merge, diff
+- binding-friendly public types
+
+**Implementation:** v0.1.0 uses native types. **v0.2.0+** backs storage with [`oxrdf`](https://crates.io/crates/oxrdf) and IRI handling with [`oxiri`](https://crates.io/crates/oxiri) / [`oxilangtag`](https://crates.io/crates/oxilangtag) via internal adapters. Public API remains stable.
 
 Public API examples:
 
@@ -282,11 +275,8 @@ JSON-LD support.
 
 Responsibilities:
 
-- JSON-LD writer
-- JSON-LD context model
-- compact output
-- expanded output
-- deterministic output
+- JSON-LD read/write (via [`oxjsonld`](https://crates.io/crates/oxjsonld))
+- deterministic output policy
 - browser-friendly serialization
 - integration with OntoEagle static datasets
 
@@ -298,35 +288,28 @@ Ontology → JSON-LD
 Mapping → JSON-LD-friendly representation
 ```
 
-Defer full JSON-LD processor implementation until later.
+Full JSON-LD processing (expansion/compaction algorithms beyond writer/reader) can grow incrementally on top of `oxjsonld`.
 
 ---
 
 ## `triplecore-turtle`
 
-RDF text format support.
+RDF syntax support.
 
 Responsibilities:
 
-- N-Triples writer
-- Turtle writer
-- prefix handling
-- deterministic output
-- later parser support
+- N-Triples, N-Quads, Turtle, TriG read/write via [`oxttl`](https://crates.io/crates/oxttl)
+- prefix handling and deterministic output
+- unified format dispatch in CLI via [`oxrdfio`](https://crates.io/crates/oxrdfio)
 
 Initial goal:
 
 ```text
-Graph → N-Triples
-Graph → Turtle
+Graph → N-Triples / Turtle
+Turtle / N-Triples → Graph
 ```
 
-Later:
-
-```text
-Turtle → Graph
-N-Triples → Graph
-```
+Conformance validated against W3C test fixtures through Oxigraph parsers.
 
 ---
 
@@ -399,6 +382,8 @@ This should not execute SQL or SPARQL directly.
 
 It should define a common query language that adapters compile.
 
+Optional v0.8.0+ helper: parse and inspect SPARQL strings via [`spargebra`](https://crates.io/crates/spargebra) for tooling and adapter development — execution remains in SparqlModel.
+
 ```text
 SemanticQuery → OntoSQL SQL plan
 SemanticQuery → SparqlModel SPARQL query
@@ -414,7 +399,7 @@ Planning and explain engine.
 
 Responsibilities:
 
-- mapping-aware path planning
+- mapping-aware path planning (via [`petgraph`](https://crates.io/crates/petgraph) in v0.9.0+)
 - query planning
 - relationship expansion
 - projection planning
@@ -450,14 +435,9 @@ Shared diagnostics system.
 
 Responsibilities:
 
-- error codes
-- warning codes
-- source spans
-- severity levels
-- fix suggestions
-- JSON output
-- LSP-friendly diagnostics
-- CLI-friendly diagnostics
+- error codes, warning codes, source spans, severity levels
+- fix suggestions, JSON output, LSP-friendly diagnostics
+- validate user artifacts against `schemas/*.schema.json` using [`jsonschema`](https://crates.io/crates/jsonschema) (v0.4.0+)
 
 Severity:
 
@@ -486,25 +466,13 @@ Example diagnostic:
 
 Future reasoning primitives.
 
-Initial scope should be intentionally small.
+Initial scope:
 
-Responsibilities in early versions:
+- class/property hierarchy traversal via [`petgraph`](https://crates.io/crates/petgraph) (v0.9.0+)
+- transitive closure helper, simple subclass inference
+- simple domain/range checks over `oxrdf` graphs
 
-- class hierarchy traversal
-- property hierarchy traversal
-- transitive closure helper
-- simple subclass inference
-- simple domain/range checks
-
-Defer:
-
-- full OWL DL reasoning
-- tableau algorithms
-- ELK-style classification
-- HermiT replacement
-- explanation engine
-
-This crate can later become the foundation for **Ontologos**.
+Defer full OWL DL reasoning, tableau algorithms, ELK-style classification.
 
 ---
 
@@ -1014,37 +982,97 @@ test:
 
 ## Dependency Strategy
 
-Start conservative.
+TripleCore **delegates standards-heavy work to mature Rust crates** and wraps them in stable adapter layers. See [docs/dependencies.md](docs/dependencies.md) and [ADR 0008](docs/decisions/0008-external-crate-dependencies.md).
 
-Likely Rust dependencies:
+### What TripleCore owns
 
 ```text
-serde
-serde_json
-thiserror
-anyhow
-indexmap
-smallvec
+Semantic mapping model
+Semantic query AST
+Planner and explain output
+Diagnostics codes and LSP-friendly output
+Ontology entity index
+Binding-friendly public API
+Cross-language fixtures and JSON schemas
+```
+
+### What TripleCore delegates
+
+```text
+RDF term/graph storage        → oxrdf
+IRI parsing                   → oxiri
+Language tags                 → oxilangtag
+Turtle / N-Triples / TriG     → oxttl
+JSON-LD                     → oxjsonld
+Unified RDF I/O             → oxrdfio
+RDF/XML (CLI, optional)     → oxrdfxml
+JSON Schema validation      → jsonschema
+YAML config parsing         → serde_yaml
+SPARQL parse (not execute)  → spargebra
+Graph algorithms            → petgraph
+Python / WASM bindings        → pyo3, wasm-bindgen
+```
+
+### Workspace foundations (v0.1.0+)
+
+```text
+serde, serde_json
+thiserror, anyhow
+indexmap, smallvec
 regex
 url
 clap
 schemars
-pyo3
-wasm-bindgen
+insta            # snapshot tests from v0.2.0
 ```
 
-Evaluate but do not immediately depend on:
+### Oxigraph ecosystem (v0.2.0+)
+
+Prefer the actively maintained Oxigraph stack. **Do not use deprecated `rio` crates.**
 
 ```text
-oxigraph
-sophia
-rio
-json-ld crates
+oxrdf
+oxiri
+oxilangtag
+oxttl
+oxjsonld
+oxrdfio
+oxrdfxml         # optional, CLI RDF/XML
+spargebra        # v0.8.0+, parse-only
 ```
 
-Reason:
+Pin Oxigraph-family crate versions together; they release in lockstep.
 
-TripleCore should avoid becoming locked into another library's data model before your ecosystem model is stable.
+### Bindings (v0.6.0 / v0.7.0)
+
+```text
+pyo3, pyo3-stub-gen, maturin
+wasm-bindgen, wasm-bindgen-futures
+console_error_panic_hook
+```
+
+### Explicitly out of scope
+
+```text
+oxigraph (full store)   — execution stays in SparqlModel / OntoSQL
+sophia                — overlapping abstractions; prefer oxrdf unless adapter need arises
+rio / rio_turtle      — unmaintained; use oxrdfio / oxttl
+```
+
+### Adapter pattern
+
+v0.1.0 ships a lightweight native RDF model. **v0.2.0 migrates internals to `oxrdf`** while preserving the public `triplecore::Graph` API:
+
+```text
+triplecore::Graph  →  adapter  →  oxrdf::Graph
+triplecore::Iri    →  adapter  →  oxrdf::NamedNode
+```
+
+Bindings and downstream projects never depend on Oxigraph types directly.
+
+### MSRV
+
+Oxigraph-family crates currently require Rust **1.87+**. Bump workspace `rust-version` when adopting them in v0.2.0.
 
 ---
 
@@ -1177,75 +1205,49 @@ complete JSON-LD processor
 
 ### v0.1.0 — Graph Core
 
-- RDF node model
-- triples
-- graph
-- namespace registry
+- RDF node model (native types; `oxrdf` migration in v0.2.0)
+- triples, graph, namespace registry
 - JSON serialization
 - basic tests
+- **Deps**: `serde`, `indexmap`, `thiserror`, `url`, `clap`, `schemars`
 
 ### v0.2.0 — Serialization
 
-- JSON-LD writer
-- N-Triples writer
-- Turtle writer
-- deterministic output
-- snapshot tests
+- Adopt `oxrdf`, `oxiri`, `oxilangtag`, `oxttl`, `oxjsonld`, `oxrdfio`
+- JSON-LD, N-Triples, Turtle writers and parsers
+- deterministic output, `insta` snapshot tests
 
 ### v0.3.0 — Ontology Model
 
-- ontology entities
-- class/property/individual model
-- labels/comments
-- entity index
-- inspect API
+- ontology entities on `oxrdf` graph substrate
+- class/property/individual model, labels/comments, entity index
 
 ### v0.4.0 — Mapping Model
 
-- entity mappings
-- property mappings
-- source paths
-- identity templates
-- validation diagnostics
+- entity/property mappings, source paths, identity templates
+- validation via `jsonschema` + `serde_yaml`
 
 ### v0.5.0 — CLI
 
-- validate
-- inspect
-- convert
-- explain
-- fixture-based tests
+- validate, inspect, convert, explain via `oxrdfio`
+- optional RDF/XML via `oxrdfxml`
 
 ### v0.6.0 — Python Bindings
 
-- PyO3 setup
-- maturin build
-- Python package
-- pytest suite
-- TripleModel prototype integration
+- PyO3 + maturin
 
 ### v0.7.0 — WASM Bindings
 
-- wasm-bindgen setup
-- npm package
-- TypeScript declarations
-- browser example
-- OntoEagle prototype integration
+- wasm-bindgen + npm packages
 
 ### v0.8.0 — Query AST
 
 - semantic query model
-- filters
-- projections
-- paths
-- query serialization
+- SPARQL parse/inspect via `spargebra` (not execution)
 
 ### v0.9.0 — Planner
 
-- explain plans
-- mapping-aware query planning
-- path planning
-- OntoSQL prototype integration
+- explain plans, path planning via `petgraph`
 
 ### v1.0.0 — Stable Runtime
 

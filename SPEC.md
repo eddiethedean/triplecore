@@ -39,3 +39,17 @@ Diagnostics use stable codes (`TC-*`), severity levels, optional targets, and su
 | Other crates | Experimental |
 
 Preview APIs may change until v1.0.0.
+
+## External dependencies
+
+TripleCore wraps mature Rust crates for standards-heavy work. See [docs/dependencies.md](docs/dependencies.md).
+
+| Area | Planned crate |
+|------|---------------|
+| RDF storage | `oxrdf` (v0.2.0+) |
+| Turtle / N-Triples | `oxttl` |
+| JSON-LD | `oxjsonld` |
+| Schema validation | `jsonschema` |
+| SPARQL parse (inspect only) | `spargebra` |
+
+Public types remain TripleCore-owned; Oxigraph types stay internal behind adapters.

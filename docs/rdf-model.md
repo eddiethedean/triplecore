@@ -2,6 +2,8 @@
 
 TripleCore v0.1.0 provides an in-memory RDF graph model in the `triplecore-rdf` crate (re-exported by `triplecore`).
 
+**v0.2.0 plan:** migrate internal storage to [`oxrdf`](https://crates.io/crates/oxrdf) while keeping the public API stable. See [dependencies.md](dependencies.md).
+
 ## Core types
 
 | Type | Description |

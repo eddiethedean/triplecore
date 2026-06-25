@@ -68,7 +68,7 @@ just build   # Build workspace
 | 0.6.0 | Python bindings |
 | 0.7.0 | WASM bindings |
 
-See [ROADMAP.md](ROADMAP.md) for the full plan.
+See [ROADMAP.md](ROADMAP.md) for the full plan and [docs/dependencies.md](docs/dependencies.md) for the external crate strategy.
 
 ## License
 

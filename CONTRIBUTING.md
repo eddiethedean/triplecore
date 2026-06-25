@@ -23,6 +23,7 @@ Optional: install [just](https://github.com/casey/just) for convenience commands
 - Prefer minimal, strongly typed public APIs
 - Add tests for real behavior, not trivial assertions
 - Use `#![deny(missing_docs)]` on public umbrella APIs
+- **Prefer established crates** for RDF syntax, IRI handling, SPARQL parsing, and schema validation — wrap them in adapters rather than reimplementing; see [docs/dependencies.md](docs/dependencies.md)
 
 ## Architecture decisions
 

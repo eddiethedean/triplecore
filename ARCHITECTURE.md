@@ -36,6 +36,21 @@ TripleCore is organized as a Rust workspace with layered crates and future langu
 - **Minimal, strongly typed APIs** — binding-friendly and deterministic
 - **Schemas as contracts** — portable interchange for tools and AI assistants
 - **Incremental delivery** — one crate at a time, shared fixture suite later
-- **No premature dependencies** — avoid locking into external RDF library data models early
+- **Delegate standards work** — RDF syntax, IRI handling, and SPARQL parsing use mature crates ([Oxigraph ecosystem](https://github.com/oxigraph/oxigraph)) behind adapter layers; see [docs/dependencies.md](docs/dependencies.md)
+- **Own semantic logic** — mappings, query AST, planner, diagnostics, and ontology index stay in TripleCore
 
-See [docs/decisions/](docs/decisions/) for architecture decision records.
+## Dependency layers
+
+```text
+Bindings (PyO3, wasm-bindgen)
+        │
+Public API (triplecore::*)
+        │
+Semantic crates (mapping, query, planner, ontology, diagnostics)
+        │
+Adapters
+        │
+External foundations (oxrdf, oxttl, oxjsonld, jsonschema, spargebra, …)
+```
+
+See [docs/dependencies.md](docs/dependencies.md) and [ADR 0008](docs/decisions/0008-external-crate-dependencies.md).
